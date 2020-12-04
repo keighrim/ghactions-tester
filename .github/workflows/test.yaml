@@ -1,0 +1,52 @@
+name: "pipeline tiggered by a new issue with a specific title"
+on: 
+  issues: 
+    types: [opened]
+jobs: 
+  issue_parser:
+    name: "Check the title of the new issue matches the target"
+    runs-on: ubuntu-latest
+    outputs:
+      repo: ${{ steps.parser.outputs.repo }}
+      tag: ${{ steps.parser.outputs.tag }}
+      comment: ${{ steps.parser.outputs.comment }}
+    steps:
+      - name: "issue parser"
+        id: parser
+        run: |
+          if [[ ${{ github.event.issue.title }} == "APP_SUBMISSION" ]] ; then 
+            repo=$(echo "${{ github.event.issue.body }}" | sed -Ene "s/\* address:(.*)$/\1/p" | tr -d ' \n')
+            tag=$(echo "${{ github.event.issue.body }}" | sed -Ene "s/\* gittag:(.*)$/\1/p" | tr -d ' \n')
+            echo "${repo}::${tag}"
+            if [ ! -z ${repo} ] && [ ! -z ${tag} ]; then 
+              comment=$(echo "${{ github.event.issue.body }}" | sed -Ene '/\* comment:/,/---/p;' | sed -e '/---/d' | sed -E 's/\* comment:[ ]*//g')
+              comment="${comment//'%'/'%25'}"
+              comment="${comment//$'\n'/'%0A'}"
+              comment="${comment//$'\r'/'%0D'}"
+              echo "${comment}"
+              if [ ! -z ${repo} ] && [ ! -z ${tag} ] ;then 
+                echo "::set-output name=repo::${repo}"
+                echo "::set-output name=tag::${tag}"
+                echo "::set-output name=comment::${comment}"
+              else 
+                exit 1
+              fi
+            else 
+              exit 1
+            fi
+          else 
+            exit 1
+          fi
+  match_test: 
+    name: "just prints the parsed results"
+    runs-on: ubuntu-latest
+    needs: issue_parser
+    steps:
+      - run: |
+          echo "${{ needs.issue_parser.outputs.repo }}"
+          echo "${{ needs.issue_parser.outputs.tag }}"
+          echo "${{ needs.issue_parser.outputs.comment }}"
+
+            
+
+
