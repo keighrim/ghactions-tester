@@ -21,4 +21,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GHTESTER }}
       - name: Print assignees
-        run: echo "${{ steps.get.outputs.data.assignees }}"  
+        run: echo "${{ steps.get.outputs.data }}"  
