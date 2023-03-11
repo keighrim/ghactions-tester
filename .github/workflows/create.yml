@@ -28,8 +28,19 @@ jobs:
         run: echo "num=$(echo ${{ github.ref_name }}  | grep -E '^[0-9]+-' | cut -d '-' -f 1)" >> $GITHUB_OUTPUT
       - name: Print parsed issue num
         run: echo "${{ steps.parse-issue-num.outputs.num }}"
-      # Runs a set of commands using the runners shell
-      #- name: Run a multi-line script
-      #  run: |
-      #    echo Add other actions to build,
-      #    echo test, and deploy your project.
+      - name: Reopen issue
+        id: reopen
+        uses: octokit/request-action@v2.x
+        with:
+          route: PATCH /repos/${{ github.repository }}/issues/${{ steps.parse-issue-num.outputs.num }}
+          state: 'open'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+      - name: Assign issue
+        id: assign
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/issues/${{ steps.parse-issue-num.outputs.num }}/assignees
+          assignees: '[ ${{ github.actor }} ]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
