@@ -27,6 +27,6 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: DELETE /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/assignees
-          body: ${{ toJson(fromJson(steps.get.outputs.data).assignees.*.login) }}
+          assignees: ${{ toJson(fromJson(steps.get.outputs.data).assignees.*.login) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GHTESTER }}
