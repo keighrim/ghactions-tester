@@ -17,8 +17,8 @@ jobs:
         id: get
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository }}/assignees
+          route: GET /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GHTESTER }}
       - name: Print assignees
-        run: echo "${{ toJson(steps.get.outputs.data.*.login) }}"  
+        run: echo "${{ toJson(steps.get.outputs.data.assignees.*.login) }}"  
