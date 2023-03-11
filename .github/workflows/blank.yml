@@ -3,7 +3,8 @@
 name: "branch create"
 
 # Controls when the workflow will run
-on: create
+on: 
+  create:
 
   # Allows you to run this workflow manually from the Actions tab
   # workflow_dispatch:
