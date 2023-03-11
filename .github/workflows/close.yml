@@ -7,20 +7,20 @@ jobs:
   unassign:
     runs-on: ubuntu-latest
     steps:
-      - name: Get assignees
-        id: get
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print assignees
-        run: echo "${{ toJson(fromJson(steps.get.outputs.data).assignees.*.login) }}"  
+      #- name: Get assignees
+      #  id: get
+      #  uses: octokit/request-action@v2.x
+      #  with:
+      #    route: GET /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Print assignees
+      #  run: echo "${{ toJson(fromJson(steps.get.outputs.data).assignees.*.login) }}"  
       - name: Remove assignees
         id: delete
         uses: octokit/request-action@v2.x
         with:
-          route: DELETE /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/assignees
-          assignees: ${{ toJson(fromJson(steps.get.outputs.data).assignees.*.login) }}
+          route: PATCH /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
+          assignees: '[]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
