@@ -17,7 +17,7 @@ jobs:
         id: get
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/{{ github.repository }}/assignees
+          route: GET /repos/${{ github.repository }}/assignees
         env:
           GITHUB_TOKEN: ${{ secrets.GHTESTER }}
       - name: Print assignees
