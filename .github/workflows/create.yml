@@ -23,7 +23,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        id: parse-isseu-num
+        id: parse-issue-num
         run: echo "num=$(echo ${{ github.ref }} | grep 'refs/heads/' | cut -d '/' -f 3- | grep -E '^[0-9]+-' | cut -d '-' -f 1)" >> $GITHUB_OUTPUT
       - name: Print parsed issue num
         run: echo "${{ steps.parse-issue-num.output.num }}"
