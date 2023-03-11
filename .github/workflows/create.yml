@@ -35,7 +35,7 @@ jobs:
           route: PATCH /repos/${{ github.repository }}/issues/${{ steps.parse-issue-num.outputs.num }}
           state: 'open'
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Assign issue
         id: assign
         uses: octokit/request-action@v2.x
@@ -43,4 +43,4 @@ jobs:
           route: POST /repos/${{ github.repository }}/issues/${{ steps.parse-issue-num.outputs.num }}/assignees
           assignees: '[ ${{ github.actor }} ]'
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
