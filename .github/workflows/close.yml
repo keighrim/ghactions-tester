@@ -3,27 +3,8 @@ on:
   issues:
     types:
       - closed
-env:
-  ASSIGNER: ${{ secrets.GH_CLAMSBOT_TOKEN }}
 
 jobs:
-  unassign:
-    runs-on: ubuntu-latest
-    steps:
-      #- name: Get assignees
-      #  id: get
-      #  uses: octokit/request-action@v2.x
-      #  with:
-      #    route: GET /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #- name: Print assignees
-      #  run: echo "${{ toJson(fromJson(steps.get.outputs.data).assignees.*.login) }}"  
-      - name: Remove assignees
-        id: delete
-        uses: octokit/request-action@v2.x
-        with:
-          route: PATCH /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
-          assignees: '[]'
-        env:
-          GITHUB_TOKEN: ${{ env.ASSIGNER }}
+  build:
+    name: Build and deploy to a docker image repository
+    uses: clamsproject/.github/.github/workflows/repo-issue-close.yml@main
