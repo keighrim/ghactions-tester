@@ -3,6 +3,9 @@ on:
   issues:
     types:
       - closed
+env:
+  ASSIGNER: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+
 jobs:
   unassign:
     runs-on: ubuntu-latest
@@ -23,4 +26,4 @@ jobs:
           route: PATCH /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
           assignees: '[]'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.ASSIGNER }}
