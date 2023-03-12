@@ -1,21 +1,5 @@
-##### IMPORTANT! If you're creating this PR for a release candidate that to be merged into the main branch, make sure use title format `Releasing <ver_num>`, where `ver_num` can be any versioning format (e.g. `x.y.z`, `vN`, etc)
+If you are creating a PR for a release candidate, please click the the `Preview` tab and select the appropriate "release" template:
 
-### Overview
-> Briefly describe what's included in the release. 
-> This release contains [new features], [bug fixes], ...
+* [Release](?expand=1&template=release.md)
 
-
-### Addition
-> What's added in this release.
-> * added ability to do something (#1)
-> * added ability to do other thing (#3)
-* 
-*
-
-### Changes
-> Change's changed or removed in this release.
-> * fixed bug that was doing wrong (#2)
-> * changed behavior of such and such class (#4)
-> * dropped an old feature (#5)
-* 
-*
+Otherwise, clear this text box and start writing your own PR. 
