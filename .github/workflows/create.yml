@@ -3,6 +3,8 @@ name: "assign an issue when issue branch is created"
 on:
   create:
 
+env:
+  ASSIGNER: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   assign:
     if: github.ref_type == 'branch'
