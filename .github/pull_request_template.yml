@@ -1,0 +1,29 @@
+name: New release
+description: PR of a release candidate, merging into the main branch 
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Overview
+      description: Briefly describe what's included in the release. 
+      placeholder: |
+        This release contains [new feature], [bug fixes], ...
+
+  - type: textarea
+    id: addition
+    attributes:
+      label: Addition
+      description: What's added in this release.
+      placeholder: | 
+        * added ability to do something (#1)
+        * added ability to do other thing (#3)
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: Changes
+      description: Change's changed or removed in this release.
+      placeholder: |
+        * fixed bug that was doing wrong (#2)
+        * changed behavior of such and such class (#4)
+        * dropped an old feature (#5)
