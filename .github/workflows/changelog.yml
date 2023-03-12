@@ -13,6 +13,8 @@ jobs:
     - name : generate changelog
       run: |
         for pr in $(gh pr list -s merged | grep -i releas | cut -f 1 ); do gh pr view $pr --json title,body,mergedAt --template '{{printf "\n"}}## {{.title}} ({{timefmt "2006-01-02" .mergedAt}}){{printf "\n"}}{{.body}}{{printf "\n"}}'; done > CHANGELOG.md
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: configure git user
       run: |
         git config --local user.email "keigh.rim@gmail.com"
