@@ -1,11 +1,33 @@
 name: "assign an issue when issue branch is created"
-
-on:
+on: 
+  workflow_call:
   create:
-
-
 jobs:
   assign:
-
     if: github.ref_type == 'branch'
-    uses: clamsproject/.github/.github/workflows/repo-issue-assign.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the issue number from the new branch name
+        id: parse-issue-num
+        run: echo "num=$(echo ${{ github.ref_name }}  | grep -E '^[0-9]+-' | cut -d '-' -f 1)" >> $GITHUB_OUTPUT
+      - name: Print parsed issue num
+        run: echo "${{ steps.parse-issue-num.outputs.num }}"
+      - name: Reopen issue
+        if: ${{ steps.parse-issue-num.outputs.num  != '' }}
+        id: reopen
+        uses: octokit/request-action@v2.x
+        with:
+          route: PATCH /repos/${{ github.repository }}/issues/${{ steps.parse-issue-num.outputs.num }}
+          state: 'open'
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
+      - name: Assign issue
+        if: ${{ steps.parse-issue-num.outputs.num  != '' }}
+        id: assign
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/issues/${{ steps.parse-issue-num.outputs.num }}/assignees
+          assignees: '[ ${{ github.actor }} ]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
+
