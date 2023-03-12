@@ -1,0 +1,29 @@
+name: generate changelog from PR history and make a commit
+on: 
+  workflow_call:
+  workflow_dispatch:
+jobs:
+  gen-and-upload:
+    runs-on: ubuntu-latest
+    env:
+      OS: linux
+    steps:
+    - name: checkout the repo 
+      uses: actions/checkout@v3
+    - name : generate changelog
+      run: |
+        for pr in $(gh pr list -s merged | grep -i releas | cut -f 1 ); do gh pr view $pr --json title,body,mergedAt --template '{{printf "\n"}}## {{.title}} ({{timefmt "2006-01-02" .mergedAt}}){{printf "\n"}}{{.body}}{{printf "\n"}}'; done > CHANGELOG.md
+    - name: configure git user
+      run: |
+        git config --local user.email "keigh.rim@gmail.com"
+        git config --local user.name "keighrim"
+    - name: commit the built changelog 
+      run: |
+        git add CHANGELOG.md
+        git commit -m 'added changelog'
+
+    - name: push the documentation commit
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main
