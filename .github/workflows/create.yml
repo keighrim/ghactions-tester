@@ -2,11 +2,12 @@ name: "assign an issue when issue branch is created"
 
 on:
   create:
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 jobs:
   assign:
 
     if: github.ref_type == 'branch'
     uses: clamsproject/.github/.github/workflows/repo-issue-assign.yml@main
+    with:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
