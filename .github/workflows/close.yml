@@ -1,10 +1,48 @@
 name: "unassign all when an issue is closed"
 on: 
+  workflow_call:
+    secrets:
+      GH_CLAMSBOT_TOKEN: 
+        description: 'A GH PAT passed from the caller workflow'
+        required: true
   issues:
     types:
       - closed
-
+  pull_request:
+    types:
+      - closed
 jobs:
-  build:
-    name: Build and deploy to a docker image repository
-    uses: clamsproject/.github/.github/workflows/repo-issue-close.yml@main
+  unassign-reviewers:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get reviewers
+        id: get_reviewers
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/requested_reviewers
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+      - name: Print reviewers
+        run: echo "${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}"
+      - name: Remove reviewers
+        id: delete_reviewers
+        uses: octokit/request-action@v2.x
+        with:
+          route: DELETE /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/requested_reviewers
+          reviewers: ${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+
+
+  unassign:
+      - name: Remove assignees 
+        id: delete_assignees
+        uses: octokit/request-action@v2.x
+        with:
+          route: PATCH /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
+          assignees: '[]'
+        env:   
+          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          
+
