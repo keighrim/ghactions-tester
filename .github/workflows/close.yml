@@ -22,7 +22,7 @@ jobs:
         with:
           route: GET /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/requested_reviewers
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
       - name: Print reviewers
         run: echo "${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}"
       - name: Remove reviewers
@@ -32,7 +32,7 @@ jobs:
           route: DELETE /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/requested_reviewers
           reviewers: ${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
   unassign:
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +43,6 @@ jobs:
           route: PATCH /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
           assignees: '[]'
         env:   
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
           
 
