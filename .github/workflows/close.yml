@@ -21,7 +21,7 @@ jobs:
         id: get_reviewers
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository }}/pulls/${{ github.pull_request.number }}/requested_reviewers
+          route: GET /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
       - name: Print reviewers
@@ -30,7 +30,7 @@ jobs:
         id: delete_reviewers
         uses: octokit/request-action@v2.x
         with:
-          route: DELETE /repos/${{ github.repository }}/pulls/${{ github.pull_request.number }}/requested_reviewers
+          route: DELETE /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
           reviewers: ${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
