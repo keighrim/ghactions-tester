@@ -33,9 +33,9 @@ jobs:
           reviewers: ${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
-
-
   unassign:
+    runs-on: ubuntu-latest
+    steps:
       - name: Remove assignees 
         id: delete_assignees
         uses: octokit/request-action@v2.x
