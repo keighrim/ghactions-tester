@@ -12,6 +12,7 @@ on:
     types:
       - closed
 jobs:
+  
   unassign-reviewers:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -20,29 +21,37 @@ jobs:
         id: get_reviewers
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/requested_reviewers
+          route: GET /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
       - name: Print reviewers
         run: echo "${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}"
       - name: Remove reviewers
         id: delete_reviewers
         uses: octokit/request-action@v2.x
         with:
-          route: DELETE /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/requested_reviewers
+          route: DELETE /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
           reviewers: ${{ toJson(fromJson(steps.get_reviewers.outputs.data).users.*.login) }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
-
-
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
   unassign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get issue number
+        id: issue_number   
+        if: ${{ github.event_name == 'issues' }}
+        run: echo "num=${{ github.event.issue.number }}" >> $GITHUB_ENV
+      - name: Get PR number
+        id: pr_number   
+        if: ${{ github.event_name == 'pull_request' }}
+        run: echo "num=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Remove assignees 
         id: delete_assignees
         uses: octokit/request-action@v2.x
         with:
-          route: PATCH /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}
+          route: PATCH /repos/${{ github.repository }}/issues/${{ env.num }}
           assignees: '[]'
         env:   
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
           
 
