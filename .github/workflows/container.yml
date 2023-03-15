@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - '*'
+  release:  
   workflow_call:
   workflow_dispatch:
 
@@ -38,13 +39,13 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: echo labels
-        run: echo "${{ toJson(fromJson(steps.meta.outputs)) }}"
+      #- name: echo labels
+      #  run: echo "${{ toJson(fromJson(steps.meta.outputs)) }}"
 
-      # - name: 🏗️ Build and push Docker image
-        # uses: docker/build-push-action@v4
-        # with:
-          # context: .
-          # push: true
-          # tags: ${{ steps.meta.outputs.tags }}
-          # labels: ${{ steps.meta.outputs.labels }}
+      - name: 🏗️ Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
