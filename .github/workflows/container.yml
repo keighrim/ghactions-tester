@@ -33,7 +33,6 @@ jobs:
           echo "existing_labels=$existing_labels" >> $GITHUB_OUTPUT
       - name: echo labels
         run: |
-          # echo "${{ join(fromJson(steps.getlabels.outputs.existing_labels), '\n') }}"
           echo "${{ steps.getlabels.outputs.existing_labels }}"
 
       - name: Extract metadata (tags, labels) for Docker
