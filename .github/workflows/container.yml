@@ -40,8 +40,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: echo labels
-        run: |
-          echo "${{ toJson(fromJson(steps.meta.outputs)) }}" && echo ${{ steps.meta.outputs.labels }} | jq 'map(del(.org.opencontainers.image.description))'
+        run: echo "${{ toJson(fromJson(steps.meta.outputs)) }}" && echo ${{ steps.meta.outputs.labels }} | jq 'map(del(.org.opencontainers.image.description))'
 
       - name: 🏗️ Build and push Docker image
         uses: docker/build-push-action@v4
