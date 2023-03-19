@@ -24,6 +24,10 @@ jobs:
       - name: 📰 Checkout repository
         uses: actions/checkout@v3
 
+      - name: get existing labels
+        id: getlabels
+        run: echo existing_labels=$(cat Dockerfile | grep LABEL | tr -s ' ' | cut -d ' ' -f 2-) >> $GITHUB_OUTPUT
+
       - name: 🏷️ Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
@@ -32,6 +36,7 @@ jobs:
           tags: |
             type=ref,event=tag
             type=ref,event=pr
+          labels: ${{ steps.getlabels.outputs.existing_labels }}
 
       - name: 🔏 Log in to the Container registry
         uses: docker/login-action@v2
@@ -40,7 +45,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: echo labels
-        run: echo "${{ toJson(fromJson(steps.meta.outputs)) }}" 
+        run: echo "${{ toJson(steps.meta.outputs.labels) }}" 
       
       - name: 🏗️ Build and push Docker image
         uses: docker/build-push-action@v4
