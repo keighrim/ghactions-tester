@@ -1,4 +1,4 @@
-name: 🐳 Build and publish a Docker image
+name: Build and publish a Docker image
 
 on:
   push:
@@ -14,21 +14,38 @@ env:
 
 jobs:
   build-and-push-image:
-    name: 🧱 Build and push image
+    name: Build and push image
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-      - name: 📰 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: get existing labels
         id: getlabels
-        run: echo existing_labels=$(cat Dockerfile | grep LABEL | tr -s ' ' | cut -d ' ' -f 2-) >> $GITHUB_OUTPUT
+        # run: echo existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' |jq -R -s -c 'split("\n")') >> $GITHUB_OUTPUT
 
-      - name: 🏷️ Extract metadata (tags, labels) for Docker
+        run: |
+          # export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' |  jq -Rsc '[split("\n")[:-1] | .[] | {"val": .} ]')
+          # export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' |  jq -Rsc 'split("\n")[:-1]')
+          export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g')
+          # echo $existing_labels
+          # existing_labels="${existing_labels//'%'/'%25'}"
+          # echo $existing_labels
+          # existing_labels="${existing_labels//$'\n'/'%0A'}"
+          # echo $existing_labels
+          # existing_labels="${existing_labels//$'\r'/'%0D'}"
+          echo $existing_labels
+          echo "existing_labels=$existing_labels" >> $GITHUB_OUTPUT
+      - name: echo labels
+        run: |
+          # echo "${{ join(fromJson(steps.getlabels.outputs.existing_labels), '\n') }}"
+          echo "${{ steps.getlabels.outputs.existing_labels }}"
+
+      - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -36,21 +53,24 @@ jobs:
           tags: |
             type=ref,event=tag
             type=ref,event=pr
-          labels: ${{ steps.getlabels.outputs.existing_labels }}
+          labels: |
+            # ${{ join(fromJson(steps.getlabels.outputs.existing_labels).*.val, '\n') }}
+            ${{ steps.getlabels.outputs.existing_labels }}
+          # sep-labels: '%0A'
 
-      - name: 🔏 Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: echo labels
-        run: echo "${{ toJson(steps.meta.outputs.labels) }}" 
+      # - name: Log in to the Container registry
+        # uses: docker/login-action@v2
+        # with:
+          # registry: ${{ env.REGISTRY }}
+          # username: ${{ github.actor }}
+          # password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: echo labels
+        # run: echo "${{ toJson(steps.meta.outputs.labels) }}" 
       
-      - name: 🏗️ Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # - name: Build and push Docker image
+        # uses: docker/build-push-action@v4
+        # with:
+          # context: .
+          # push: true
+          # tags: ${{ steps.meta.outputs.tags }}
+          # labels: ${{ steps.meta.outputs.labels }}
