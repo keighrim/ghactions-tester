@@ -26,18 +26,9 @@ jobs:
 
       - name: get existing labels
         id: getlabels
-        # run: echo existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' |jq -R -s -c 'split("\n")') >> $GITHUB_OUTPUT
 
         run: |
-          # export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' |  jq -Rsc '[split("\n")[:-1] | .[] | {"val": .} ]')
-          # export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' |  jq -Rsc 'split("\n")[:-1]')
           export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g')
-          # echo $existing_labels
-          # existing_labels="${existing_labels//'%'/'%25'}"
-          # echo $existing_labels
-          # existing_labels="${existing_labels//$'\n'/'%0A'}"
-          # echo $existing_labels
-          # existing_labels="${existing_labels//$'\r'/'%0D'}"
           echo $existing_labels
           echo "existing_labels=$existing_labels" >> $GITHUB_OUTPUT
       - name: echo labels
