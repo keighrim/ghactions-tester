@@ -32,7 +32,7 @@ jobs:
           echo $existing_labels
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "existing_labels<<$EOF" >> $GITHUB_OUTPUT
-          echo $existing_labels >> $GITHUB_OUTPUT
+          cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
           # echo "existing_labels=$existing_labels" >> $GITHUB_OUTPUT
       - name: echo labels
