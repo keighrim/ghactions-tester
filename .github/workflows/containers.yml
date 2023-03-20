@@ -6,13 +6,13 @@ on:
       - '*'
 jobs:
   call-build-base:
-    uses: container.yml
+    uses: container.yml@main
     secrets: inherit
     with:
       buildfilename: './container/Containerfile'
       version: '0.0.1'
   call-build-more:
-    uses: container.yml
+    uses: container.yml@main
     secrets: inherit
     with:
       buildfilename: './container/more.containerfile'
