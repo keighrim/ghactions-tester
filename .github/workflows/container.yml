@@ -45,7 +45,7 @@ jobs:
             type=ref,event=pr
           sep-labels: '\n'
           labels: |
-            ${{ join(fromJson(steps.getlabels.outputs.existing_labels), '\n') }}
+            ${{ fromJson(steps.getlabels.outputs.existing_labels) }}
           # sep-labels: '%0A'
 
       - name: Log in to the Container registry
@@ -63,4 +63,5 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
