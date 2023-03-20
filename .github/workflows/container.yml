@@ -44,7 +44,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
           labels: |
-            ${{ fromJson(steps.getlabels.outputs.existing_labels) }}
+            ${{ join(fromJson(steps.getlabels.outputs.existing_labels), ',') }}
           # sep-labels: '%0A'
 
       # - name: Log in to the Container registry
