@@ -6,13 +6,13 @@ on:
       - '*'
 jobs:
   call-build-base:
-    uses: keighrim/ghactions-tester/.github/workflows/container.yml@main
+    uses: ./.github/workflows/container.yml
     secrets: inherit
     with:
       buildfilename: './container/Containerfile'
       version: '0.0.1'
   call-build-more:
-    uses: keighrim/ghactions-tester/.github/workflows/container.yml@main
+    uses: ./.github/workflows/container.yml
     secrets: inherit
     with:
       buildfilename: './container/more.containerfile'
