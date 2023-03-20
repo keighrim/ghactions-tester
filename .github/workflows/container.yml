@@ -28,9 +28,12 @@ jobs:
         id: getlabels
 
         run: |
-          export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' | jq -Rsc 'split("\n")[:-1]')
+          export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g')
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "existing_labels<<$EOF" >> $GITHUB_ENV
+          cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
           echo $existing_labels
-          echo "existing_labels=$existing_labels" >> $GITHUB_OUTPUT
       - name: echo labels
         run: |
           echo "${{ steps.getlabels.outputs.existing_labels }}"
@@ -44,7 +47,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
           labels: |
-            ${{ fromJson(steps.getlabels.outputs.existing_labels).* }}
+            ${{ env.existing_labels }}
           # sep-labels: '%0A'
 
       - name: Log in to the Container registry
