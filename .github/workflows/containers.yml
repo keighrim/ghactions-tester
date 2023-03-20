@@ -1,0 +1,22 @@
+name: Build and publish a Docker image
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  call-unassign:
+
+jobs:
+  call-build-base:
+    uses: clamsproject/.github/.github/workflows/repo-issue-close.yml@main
+    secrets: inherit
+    with:
+      buildfilename: './container/Containerfile'
+      version: '0.0.1'
+  call-build-more:
+    uses: clamsproject/.github/.github/workflows/repo-issue-close.yml@main
+    secrets: inherit
+    with:
+      buildfilename: './container/more.containerfile'
+      version: '0.0.1'

@@ -1,12 +1,16 @@
 name: Build and publish a Docker image
 
 on:
-  push:
-    tags:
-      - '*'
-  release:  
   workflow_call:
-  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: 'clams-python SDK version'
+      buildfilename:
+        required: true
+        type: string
+        description: 'name of the container file to use'
 
 env:
   REGISTRY: ghcr.io
@@ -21,48 +25,55 @@ jobs:
       packages: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: get existing labels
-        id: getlabels
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "EXISTING_LABELS<<$EOF" >> $GITHUB_ENV
-          cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+([^=]+)="?(.+)("|$)/\1=\2/g' >> $GITHUB_ENV
-          echo "$EOF" >> $GITHUB_ENV
-          echo $EXISTING_LABELS
-      - name: echo labels
-        run: |
-          echo "${{ steps.getlabels.outputs.existing_labels }}"
+    - name: get existing labels
+      id: getlabels
+      run: |
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "EXISTING_LABELS<<$EOF" >> $GITHUB_ENV
+        cat ${{ inputs.buildfilename }} | grep LABEL | sed -E 's/^LABEL\s+([^=]+)="?(.+)("|$)/\1=\2/g' >> $GITHUB_ENV
+        echo "$EOF" >> $GITHUB_ENV
+        echo $EXISTING_LABELS
+    - name: get image name suffix
+      id: getsuffix
+      run: |
+        export nameonly="${${{ inputs.buildfilename }}%.*}"
+        if [ ${nameonly} == ${{ inputs.buildfilename }} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=$(basename ${nameonly})" >> $GITHUB_ENV; fi
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=tag
-            type=ref,event=pr
-          labels: |
-            ${{ env.existing_labels }}
-          # sep-labels: '%0A'
+    - name: echo labels
+      run: |
+        echo "${{ steps.getlabels.outputs.existing_labels }}"
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      # - name: echo labels
-        # run: |
-          # echo "${{ toJson(steps.meta.outputs.labels) }}" 
-          # echo $DOCKER_METADATA_OUTPUT_LABELS
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ env.DOCKER_METADATA_OUTPUT_LABELS }}
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=pep440,pattern={{version}},value=${{ inputs.version }}
+          type=ref,event=tag
+          type=ref,event=pr
+        labels: |
+          ${{ env.existing_labels }}
+        # sep-labels: '%0A'
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    # - name: echo labels
+      # run: |
+        # echo "${{ toJson(steps.meta.outputs.labels) }}" 
+        # echo $DOCKER_METADATA_OUTPUT_LABELS
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ env.DOCKER_METADATA_OUTPUT_LABELS }}
