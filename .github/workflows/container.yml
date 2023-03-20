@@ -82,7 +82,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: 
+        context: ${{ env.CONTEXT }}
+        file: ${{ inputs.buildfilename }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ env.DOCKER_METADATA_OUTPUT_LABELS }}
