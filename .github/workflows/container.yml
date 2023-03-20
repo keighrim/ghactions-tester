@@ -28,7 +28,7 @@ jobs:
         id: getlabels
 
         run: |
-          export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g')
+          export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+([^=]+)="?(.+)("|$)/\1=\2/g')
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "existing_labels<<$EOF" >> $GITHUB_ENV
           cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' >> $GITHUB_ENV
@@ -56,10 +56,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: echo labels
-        run: |
-          echo "${{ toJson(steps.meta.outputs.labels) }}" 
-          echo $DOCKER_METADATA_OUTPUT_LABELS
+      # - name: echo labels
+        # run: |
+          # echo "${{ toJson(steps.meta.outputs.labels) }}" 
+          # echo $DOCKER_METADATA_OUTPUT_LABELS
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
