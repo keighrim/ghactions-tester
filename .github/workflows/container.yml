@@ -24,8 +24,8 @@ jobs:
       packages: write
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
     - name: get existing labels
       id: getlabels
@@ -48,7 +48,7 @@ jobs:
       run: |
         export filename=$(basename ${{ inputs.buildfilename }})
         export nameonly="${filename%.*}"
-        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
+        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
@@ -60,7 +60,7 @@ jobs:
           type=ref,event=tag
           type=ref,event=pr
         labels: |
-          ${{ env.existing_labels }}
+          ${{ env.EXISTING_LABELS }}
 
     - name: Log in to the Container registry
       uses: docker/login-action@v2
@@ -68,7 +68,7 @@ jobs:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
