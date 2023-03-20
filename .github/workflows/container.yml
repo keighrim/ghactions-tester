@@ -14,7 +14,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-image:
@@ -51,22 +50,17 @@ jobs:
         export nameonly="${filename%.*}"
         if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
 
-    - name: echo labels
-      run: |
-        echo "${{ steps.getlabels.outputs.existing_labels }}"
-
     - name: Extract metadata (tags, labels) for Docker
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/${{ github.repository }}${{ env.SUFFIX }}
         tags: |
           type=pep440,pattern={{version}},value=${{ inputs.version }}
           type=ref,event=tag
           type=ref,event=pr
         labels: |
           ${{ env.existing_labels }}
-        # sep-labels: '%0A'
 
     - name: Log in to the Container registry
       uses: docker/login-action@v2
@@ -74,10 +68,6 @@ jobs:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    # - name: echo labels
-      # run: |
-        # echo "${{ toJson(steps.meta.outputs.labels) }}" 
-        # echo $DOCKER_METADATA_OUTPUT_LABELS
     
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
