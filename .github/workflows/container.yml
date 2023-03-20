@@ -43,7 +43,7 @@ jobs:
           tags: |
             type=ref,event=tag
             type=ref,event=pr
-          sep-labels: ','
+          # sep-labels: ','
           labels: |
             ${{ join(fromJson(steps.getlabels.outputs.existing_labels), '\n) }}
           # sep-labels: '%0A'
