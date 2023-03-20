@@ -6,13 +6,13 @@ on:
       - '*'
 jobs:
   call-build-base:
-    uses: clamsproject/.github/.github/workflows/repo-issue-close.yml@main
+    uses: container.yml
     secrets: inherit
     with:
       buildfilename: './container/Containerfile'
       version: '0.0.1'
   call-build-more:
-    uses: clamsproject/.github/.github/workflows/repo-issue-close.yml@main
+    uses: container.yml
     secrets: inherit
     with:
       buildfilename: './container/more.containerfile'
