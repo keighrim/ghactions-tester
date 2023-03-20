@@ -37,6 +37,13 @@ jobs:
         echo "$EOF" >> $GITHUB_ENV
         echo $EXISTING_LABELS
 
+    - name: get image build context
+      id: getcontext
+      run: |
+        echo "CONTEXT=$(dirname ${{ inputs.buildfilename }})" >> $GITHUB_ENV
+        export nameonly="${filename%.*}"
+        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
+
     - name: get image name suffix
       id: getsuffix
       run: |
@@ -75,7 +82,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: 
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ env.DOCKER_METADATA_OUTPUT_LABELS }}
