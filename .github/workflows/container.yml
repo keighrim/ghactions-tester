@@ -36,11 +36,13 @@ jobs:
         cat ${{ inputs.buildfilename }} | grep LABEL | sed -E 's/^LABEL\s+([^=]+)="?(.+)("|$)/\1=\2/g' >> $GITHUB_ENV
         echo "$EOF" >> $GITHUB_ENV
         echo $EXISTING_LABELS
+
     - name: get image name suffix
       id: getsuffix
       run: |
-        export nameonly="${${{ inputs.buildfilename }}%.*}"
-        if [ ${nameonly} == ${{ inputs.buildfilename }} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=$(basename ${nameonly})" >> $GITHUB_ENV; fi
+        export filename=$(basename ${{ inputs.filename }})
+        export nameonly="${filename%.*}"
+        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
 
     - name: echo labels
       run: |
