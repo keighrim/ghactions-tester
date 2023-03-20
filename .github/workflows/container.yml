@@ -40,8 +40,6 @@ jobs:
       id: getcontext
       run: |
         echo "CONTEXT=$(dirname ${{ inputs.buildfilename }})" >> $GITHUB_ENV
-        export nameonly="${filename%.*}"
-        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
 
     - name: get image name suffix
       id: getsuffix
