@@ -67,4 +67,4 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: $DOCKER_METADATA_OUTPUT_LABELS
+          labels: ${{ env.DOCKER_METADATA_OUTPUT_LABELS }}
