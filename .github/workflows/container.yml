@@ -62,5 +62,4 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: |
-            ${{ join(steps.meta.outputs.labels, '\n') }}
+          labels: ${{ join(steps.meta.outputs.labels, '\n') }}
