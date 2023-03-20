@@ -40,7 +40,7 @@ jobs:
     - name: get image name suffix
       id: getsuffix
       run: |
-        export filename=$(basename ${{ inputs.filename }})
+        export filename=$(basename ${{ inputs.buildfilename }})
         export nameonly="${filename%.*}"
         if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=''" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
 
