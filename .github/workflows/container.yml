@@ -46,7 +46,7 @@ jobs:
       run: |
         export filename=$(basename ${{ inputs.buildfilename }})
         export nameonly="${filename%.*}"
-        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=" >> $GITHUB_ENV ; else echo "SUFFIX=${nameonly}" >> $GITHUB_ENV; fi
+        if [ ${nameonly} == ${filename} ]; then echo "SUFFIX=" >> $GITHUB_ENV ; else echo "SUFFIX=-${nameonly}" >> $GITHUB_ENV; fi
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
