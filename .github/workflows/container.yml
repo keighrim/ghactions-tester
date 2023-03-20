@@ -54,7 +54,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: echo labels
-        run: echo "${{ toJson(steps.meta.outputs.labels) }}" 
+        run: |
+          echo "${{ toJson(steps.meta.outputs.labels) }}" 
+          echo $DOCKER_METADATA_OUTPUT_LABELS
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -62,4 +64,4 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: $DOCKER_METADATA_OUTPUT_LABELS
