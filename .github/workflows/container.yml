@@ -28,10 +28,9 @@ jobs:
         id: getlabels
 
         run: |
-          export existing_labels=$(cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+([^=]+)="?(.+)("|$)/\1=\2/g')
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "existing_labels<<$EOF" >> $GITHUB_ENV
-          cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+//g' >> $GITHUB_ENV
+          cat Dockerfile | grep LABEL | sed -E 's/^LABEL\s+([^=]+)="?(.+)("|$)/\1=\2/g') >> $GITHUB_ENV
           echo "$EOF" >> $GITHUB_ENV
           echo $existing_labels
       - name: echo labels
