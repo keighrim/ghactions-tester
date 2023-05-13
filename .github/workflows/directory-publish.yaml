@@ -1,4 +1,4 @@
-name: metadata generation
+name: App Registration
 on:
   workflow_dispatch:
     inputs:
@@ -12,7 +12,7 @@ on:
         required: false
         description: 'public container ID to include in the published app page'
   issues: 
-    types: [opened, reopened]
+    types: [opened]
 
 jobs:
   generate:
@@ -98,4 +98,18 @@ jobs:
           git add docs
           git commit -m "adding metadata of $branch"
           git push origin "$branch"
-#      - name: start a new pr
+          echo "appbranch=$branch" >> $GITHUB_ENV
+          
+      - name: start a new pr
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/pulls
+          title: 'Registering ${{ env.app_shortname }}/${{ env.app_version }}'
+          head: ${{ env.appbranch }}
+          base: main
+          body: |
+            ${{ env.appissue != 0 && format('addresses \#{0}.', env.appissue)}} 
+            some prose for urge manual review before merge 
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
+
