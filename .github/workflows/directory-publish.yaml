@@ -36,6 +36,7 @@ jobs:
         run: |
           if [[ ${{ github.event.issue.title }} == "APP_SUBMISSION" ]] ; then
             echo "${{ github.event.issue.body }}" | python scripts/parse-issue.py
+            echo "appissue=${{ github.event.issue.number }}" >> $GITHUB_ENV
           else
             echo "wrong title ${{ github.event.issue.title }}"
             exit 1
@@ -47,6 +48,7 @@ jobs:
             echo "apprepo=${{ github.event.inputs.repo }}" >> $GITHUB_ENV
             echo "apptag=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
             echo "appcontainer=${{ github.event.inputs.container }}" >> $GITHUB_ENV
+            echo "appissue=0" >> $GITHUB_ENV
         
       - name: Check out target app repository
         if: env.apprepo == '' || env.apptag == ''
@@ -89,7 +91,7 @@ jobs:
 #      - name: append app metadata to BIG json for API access
       - name: commit docs and push to new branch
         run: |
-          branch="${{ env.app_shortname }}-${{ env.app_version }}"
+          branch="${{ env.appissue }}-${{ env.app_shortname }}-${{ env.app_version }}"
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -b "$branch"
