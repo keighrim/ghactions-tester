@@ -54,7 +54,7 @@ jobs:
 #      - name: generate html of app metadata 
       - name: copy html and json to proper location
         run: |
-          dir="docs/apps/${{ env.app_shortname }}/${{ env.app_version }}"
+          dir="docs/${{ env.app_shortname }}/${{ env.app_version }}"
           mkdir -p $dir
           cp metadata.json $dir/
 
