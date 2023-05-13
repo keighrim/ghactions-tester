@@ -11,6 +11,8 @@ on:
       container:
         required: false
         description: 'public container ID to include in the published app page'
+  issues: 
+    types: [opened, reopened]
 
 jobs:
   generate:
@@ -29,13 +31,34 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v4
         
+      - name: set repo address and tag from submitted issue
+        if: github.event_name == 'issues'
+        run: |
+          if [[ ${{ github.event.issue.title }} == "APP_SUBMISSION" ]] ; then
+            apprepo=$(echo "${{ github.event.issue.body }}" | sed -Ene "s/^NAME:(.*)$/\1/p" | tr -d ' \n')
+            apptag=$(echo "${{ github.event.issue.body }}" | sed -Ene "s/^TAG:(.*)$/\1/p" | tr -d ' \n')
+            echo "${apprepo}::${apptag}"
+            if [ ! -z ${apprepo} ] && [ ! -z ${apptag} ]; then 
+              appcontainer=$(echo "${{ github.event.issue.body }}" | sed -Ene "s/\* TAG:(.*)$/\1/p" | tr -d ' \n')
+            else
+              echo "empty *${apprepo}* *${apptag}*"
+              exit 1
+            fi
+          else
+            echo "wrong title ${{ github.event.issue.title }}"
+            exit 1
+          fi
+          echo "apprepo=$apprepo" >> $GITHUB_ENV
+          echo "apptag=$apptag" >> $GITHUB_ENV
+          echo "appcontainer=$appcontainer" >> $GITHUB_ENV
+          
+      
       - name: set repo address and tag from dispatch input
         if: github.event_name == 'workflow_dispatch'
         run: |
             echo "apprepo=${{ github.event.inputs.repo }}" >> $GITHUB_ENV
             echo "apptag=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
             echo "appcontainer=${{ github.event.inputs.container }}" >> $GITHUB_ENV
-        
         
       - name: Check out target app repository
         uses: actions/checkout@v3
