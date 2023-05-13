@@ -18,15 +18,53 @@ jobs:
     name: 'pull metadata from app repo and generate json and html'
     runs-on: ubuntu-latest
     
+    defaults:
+      run:
+        working-directory: ./main
     steps:
       - name: Check out publisher repository
+        uses: actions/checkout@v3
+        with:
+          path: main
       - name: Check out target app repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.repo }}
+          ref: ${{ inputs.tag }}
+          path: app
       - name: setup python 
+        uses: actions/setup-python@v4
+        
       - name: install clams sdk 
+        run: |
+          pip install clams-python==0.6.0
+          
       - name: generate app metadata (dir = app repo -> metadata.json file)
+        run: |
+          python ../app/metadata.py > metadata.json
+          
       - name: prep envvar for shortname and version
-      - name: generate html of app metadata 
+        id: appname
+        run: |
+          echo "app_id=$( jq -r '.identifier' metadata.json )" >> $GITHUB_OUTPUT
+          echo "app_shortname=$( echo $app_id | rev | cut -d'/' -f2 | rev )" >> $GITHUB_OUTPUT
+          echo "app_version=$( echo $app_id | rev | cut -d'/' -f1 | rev )" >> $GITHUB_OUTPUT
+          
+#      - name: generate html of app metadata 
       - name: copy html and json to proper location
-      - name: append app metadata to BIG json for API access
+        run: |
+          dir="docs/apps/${{ steps.appname.outputs.app_shortname }}/${{ steps.appname.outputs.app_version }}"
+          mkdir -p $dir
+          cp metadata.json $dir/
+
+#      - name: append app metadata to BIG json for API access
       - name: commit docs and push to new branch
-      - name: start a new pr
+        run: |
+          echo "branch=${{ steps.appname.outputs.app_shortname }}-${{ steps.appname.outputs.app_version }}" >> $GITHUB_ENV
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -b "${{ env.branch }}"
+          git add docs
+          git commit -m "adding metadata of ${{ env.branch }}"
+          git push origin "${{ env.branch }}"
+#      - name: start a new pr
