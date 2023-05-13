@@ -1,238 +1,32 @@
 name: Scheduled regeneration
 on:
-  push:
-    paths:
-      - .github/workflows/scheduled.yml
-      - Rakefile
-      - script/**
-  schedule:
-    # Every 15 minutes
-    - cron: "*/15 * * * *"
   workflow_dispatch:
+    inputs:
+      repo:
+        required: true
+        description: 'The repository to generate data for'
+      tag:
+        required: true
+        description: 'The tag to generate data for'
 
 concurrency:
   group: scheduled-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  generate-cask:
-    if: startsWith( github.repository, 'Homebrew/' )
-    name: Generate homebrew/cask data, pages and API
-    runs-on: macos-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@main
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Reset homebrew/cask tap
-        run: brew update-reset $(brew --repository homebrew/cask)
-
-      - name: Update data for homebrew/cask
-        run: /usr/bin/rake casks
-        env:
-          HOMEBREW_DEVELOPER: 1
-
-      - name: Archive data
-        run: tar czvf data-cask.tar.gz _data/cask/ api/cask/ api/cask-source/ cask/
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: data-cask
-          path: data-cask.tar.gz
-          retention-days: 1
-  generate-core:
-    if: startsWith( github.repository, 'Homebrew/' )
-    name: Generate homebrew/core data, pages and API
-    runs-on: macos-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@main
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Update data for homebrew/core
-        run: /usr/bin/rake formulae
-        env:
-          HOMEBREW_DEVELOPER: 1
-
-      - name: Archive data
-        run: tar czvf data-core.tar.gz _data/formula/ _data/formula_canonical.json api/formula/ formula/
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: data-core
-          path: data-core.tar.gz
-          retention-days: 1
-  generate-analytics:
-    if: startsWith( github.repository, 'Homebrew/' )
-    name: Generate analytics data
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@main
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.6"
-
-      - name: Set up analytics
-        env:
-          ANALYTICS_JSON_KEY: ${{ secrets.HOMEBREW_FORMULAE_BREW_SH_ANALYTICS_JSON_KEY }}
-        run: echo "$ANALYTICS_JSON_KEY" > ~/.homebrew_analytics.json
-
-      - name: Update analytics data
-        run: /usr/bin/rake analytics
-
-      - name: Archive data
-        run: tar czvf data-analytics.tar.gz _data/analytics _data/analytics-linux api/analytics api/analytics-linux
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: data-analytics
-          path: data-analytics.tar.gz
-          retention-days: 1
-  generate-samples:
-    if: startsWith( github.repository, 'Homebrew/' )
-    name: Generate API samples
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@main
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.6"
-
-      - name: Update data for api samples
-        run: /usr/bin/rake api_samples
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: api-samples
-          path: _includes/api-samples/
-          retention-days: 1
-  build:
-    needs: [generate-cask, generate-core, generate-analytics, generate-samples]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Set up Git repository
-        uses: actions/checkout@main
-
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.6"
-          bundler-cache: true
-
-      - uses: actions/download-artifact@v3
-
-      - name: Move artifacts into place
-        run: |
-          tar xvf data-analytics/data-analytics.tar.gz
-          tar xvf data-cask/data-cask.tar.gz
-          tar xvf data-core/data-core.tar.gz
-          mv -v api-samples _includes/api-samples
-
-      - name: Build site
-        run: bundle exec jekyll build
-
-      - name: Validate build
-        run: ./script/validate-build.rb
-
-      - name: Sign API
-        env:
-          JWS_SIGNING_KEY_ID: homebrew-1
-          JWS_SIGNING_KEY: ${{ secrets.JWS_HOMEBREW_1 }}
-        run: ./script/sign-json.rb
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-  deploy:
-    needs: build
-    if: ${{ github.ref_name == 'master' }}
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    outputs:
-      deploy_url: ${{ steps.deployment.outputs.page_url }}
+  generate:
+    name: 'pull metadata from app repo and generate json and html'
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
-  deploy-issue:
-    name: Open/close deploy issues
-    needs:
-      [
-        generate-cask,
-        generate-core,
-        generate-analytics,
-        generate-samples,
-        build,
-        deploy,
-      ]
-    if: ${{ always() && github.ref_name == 'master' }}
-    env:
-      GH_TOKEN: ${{ secrets.HOMEBREW_GITHUB_PUBLIC_REPO_TOKEN }}
-      REPO: ${{ github.repository }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Find existing deploy failure issue
-        run: |
-          EXISTING_ISSUE=$(gh issue list --repo "$REPO" --author BrewTestBot --label 'deploy failure' | awk '{print $1}')
-          echo "EXISTING_ISSUE=$EXISTING_ISSUE" >> $GITHUB_ENV
-          echo "WORKFLOW_URL=https://github.com/Homebrew/formulae.brew.sh/actions/runs/$RUN_ID" >> $GITHUB_ENV
-        env:
-          RUN_ID: ${{ github.run_id }}
-      - name: Report deploy failure
-        if: ${{ contains(needs.*.result, 'failure') }}
-        run: |
-          ISSUE_TITLE="formulae.brew.sh deployment failed!"
-          ISSUE_BODY="The most recent [formulae.brew.sh deployment failed]($WORKFLOW_URL)."
-          if [ -n "$EXISTING_ISSUE" ]; then
-            gh issue edit "$EXISTING_ISSUE" --repo "$REPO" --body "$(echo -e "$ISSUE_BODY")"
-          else
-            gh issue create --repo "$REPO" --title "$ISSUE_TITLE" --label "deploy failure" --body "$(echo -e "$ISSUE_BODY")"
-          fi
-      - name: Report deploy success
-        if: ${{ needs.deploy.result == 'success' }}
-        run: |
-          COMMENT_BODY="The most recent [formulae.brew.sh deployment succeeded]($WORKFLOW_URL). Closing issue."
-          if [ -n "$EXISTING_ISSUE" ]; then
-            gh issue comment "$EXISTING_ISSUE" --repo "$REPO" --body "$(echo -e "$COMMENT_BODY")"
-            gh issue close "$EXISTING_ISSUE" --repo "$REPO"
-          fi
+      - name: Check out publisher repository
+      - name: Check out target app repository
+      - name: setup python 
+      - name: install clams sdk 
+      - name: generate app metadata (dir = app repo -> metadata.json file)
+      - name: prep envvar for shortname and version
+      - name: generate html of app metadata 
+      - name: copy html and json to proper location
+      - name: append app metadata to BIG json for API access
+      - name: commit docs and push to new branch
+      - name: start a new pr
