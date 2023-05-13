@@ -40,13 +40,15 @@ jobs:
           pip install clams-python==0.6.0
           
       - name: generate app metadata (dir = app repo -> metadata.json file)
+        working-directory: ./app
         run: |
-          python ../app/metadata.py > metadata.json
+          python ./metadata.py > ../main/metadata.json
           
       - name: prep envvar for shortname and version
         id: appname
         run: |
-          echo "app_id=$( jq -r '.identifier' metadata.json )" >> $GITHUB_OUTPUT
+          app_id=$( jq -r '.identifier' metadata.json )
+          echo "app_fullid=$app_id" >> $GITHUB_OUTPUT
           echo "app_shortname=$( echo $app_id | rev | cut -d'/' -f2 | rev )" >> $GITHUB_OUTPUT
           echo "app_version=$( echo $app_id | rev | cut -d'/' -f1 | rev )" >> $GITHUB_OUTPUT
           
@@ -60,11 +62,11 @@ jobs:
 #      - name: append app metadata to BIG json for API access
       - name: commit docs and push to new branch
         run: |
-          echo "branch=${{ steps.appname.outputs.app_shortname }}-${{ steps.appname.outputs.app_version }}" >> $GITHUB_ENV
+          branch="${{ steps.appname.outputs.app_shortname }}-${{ steps.appname.outputs.app_version }}"
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -b "${{ env.branch }}"
+          git checkout -b "$branch"
           git add docs
-          git commit -m "adding metadata of ${{ env.branch }}"
-          git push origin "${{ env.branch }}"
+          git commit -m "adding metadata of $branch"
+          git push origin "$branch"
 #      - name: start a new pr
