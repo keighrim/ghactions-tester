@@ -1,4 +1,4 @@
-name: Scheduled regeneration
+name: metadata generation
 on:
   workflow_dispatch:
     inputs:
