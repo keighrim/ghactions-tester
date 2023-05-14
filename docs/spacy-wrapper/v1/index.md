@@ -1,5 +1,5 @@
 
-### CLAMS wrapper for spaCy NLP (v1)
+### CLAMS wrapper for spaCy NLP (v1) [metadata.json](metadata.json)
 ###### Apply spaCy NLP to all text documents in a MMIF file.
 
 * App ID: [http://apps.clams.ai/spacy-wrapper/v1](http://apps.clams.ai/spacy-wrapper/v1)
