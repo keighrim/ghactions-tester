@@ -85,8 +85,9 @@ jobs:
           path: app
         
       - name: install clams sdk 
+        working-directory: ./app
         run: |
-          pip install clams-python==0.6.0
+          pip install $(grep clams-python requirements.* | sort -r | head -n1)
           
       - name: generate app metadata (dir = app repo -> metadata.json file)
         working-directory: ./app
@@ -122,13 +123,13 @@ jobs:
           git checkout -b register/"$topic_branch"
           git add docs
           git commit -m "adding metadata of $topic_branch"
-          git push https://keighrim:${{ secrets.MY_GH_TOKEN }}@github.com/${{ env.app_dir_repo }}.git register/"$topic_branch"
+          git push origin register/"$topic_branch"
           echo "appbranch=$topic_branch" >> $GITHUB_ENV
 
       - name: start a new pr
         uses: octokit/request-action@v2.x
         with:
-          route: POST /repos/${{ github.repository }}/pulls
+          route: POST /repos/${{ env.app_dir_repo }}/pulls
           title: 'App Submitted - ${{ env.app_shortname }}/${{ env.app_version }}'
           head: 'register/${{ env.appbranch }}'
           base: main
