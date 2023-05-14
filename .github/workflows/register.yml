@@ -126,7 +126,7 @@ jobs:
           head: 'register/${{ env.appbranch }}'
           base: main
           body: |
-            ${{ env.appissue != 0 && format('(addresses \#{0}.)', env.appissue) || '(no connected issue)' }} 
+            ${{ env.appissue != 0 && format('( closes \#{0} .)', env.appissue) || '(no connected issue)' }} 
 
             This PR registers the app ${{ env.app_shortname }}/${{ env.app_version }} from https://github.com/${{ env.apprepo }}. Carefully review the metadata
             before merging. If something is wrong with the metadata, please close the PR and let the app developer know.
