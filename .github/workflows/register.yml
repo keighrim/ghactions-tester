@@ -96,12 +96,15 @@ jobs:
           echo "app_shortname=$( echo $app_id | rev | cut -d'/' -f2 | rev )" >> $GITHUB_ENV
           echo "app_version=$( echo $app_id | rev | cut -d'/' -f1 | rev )" >> $GITHUB_ENV
           
-#      - name: generate html of app metadata 
-      - name: copy html and json to proper location
+      - name: generate markdown of app metadata 
+        run: |
+          python scripts/metadata-markdown.py > index.md
+        
+      - name: copy md and json to proper location
         run: |
           dir="docs/${{ env.app_shortname }}/${{ env.app_version }}"
           mkdir -p $dir
-          cp metadata.json $dir/
+          cp metadata.json index.md $dir/
 
 #      - name: append app metadata to BIG json for API access
       - name: commit docs and push to new branch
@@ -128,5 +131,6 @@ jobs:
             This PR registers the app ${{ env.app_shortname }}/${{ env.app_version }} from https://github.com/${{ env.apprepo }}. Carefully review the metadata
             before merging. If something is wrong with the metadata, please close the PR and let the app developer know.
         env:
+#          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
 
