@@ -51,7 +51,7 @@ jobs:
         if: github.event_name == 'issues'
         run: |
           if [[ ${{ github.event.issue.title }} == "APP_SUBMISSION" ]] ; then
-            echo "${{ github.event.issue.body }}" | python scripts/parse-issue.py
+            echo "${{ github.event.issue.body }}" | python scripts/parse_issue.py
             echo "appissue=${{ github.event.issue.number }}" >> $GITHUB_ENV
           else
             echo "wrong title ${{ github.event.issue.title }}"
@@ -98,7 +98,7 @@ jobs:
           
       - name: generate markdown of app metadata 
         run: |
-          python scripts/metadata-markdown.py > index.md
+          python scripts/metadata_markdown.py > index.md
         
       - name: copy md and json to proper location
         run: |
@@ -106,7 +106,9 @@ jobs:
           mkdir -p $dir
           cp metadata.json index.md $dir/
 
-#      - name: append app metadata to BIG json for API access
+      - name: append app metadata to BIG json for API access
+        run: python scripts/index_page_data.py ${{ env.app_fullid }}
+        
       - name: commit docs and push to new branch
         run: |
           branch="${{ env.appissue }}-${{ env.app_shortname }}-${{ env.app_version }}"

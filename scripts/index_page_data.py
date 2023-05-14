@@ -1,7 +1,7 @@
 import json
-import os
+import sys
 
-fullid = os.getenv('app_fullid')
+fullid = sys.argv[1]
 shortid, version = fullid.rsplit('/', 1)
 
 existing_data = json.load(open('docs/_data/apps.json'))
