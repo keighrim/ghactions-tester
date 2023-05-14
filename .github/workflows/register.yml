@@ -61,12 +61,12 @@ jobs:
       - name: set repo address and tag from dispatch input
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
         run: |
-            echo "apprepo=${{ github.event.inputs.repo }}" >> $GITHUB_ENV
+            echo "apprepo=$(echo ${{ github.event.inputs.repo }} | sed 's|^https://github.com/||g'" >> $GITHUB_ENV
             echo "apptag=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
             echo "appcontainer=${{ github.event.inputs.container }}" >> $GITHUB_ENV
             echo "appissue=0" >> $GITHUB_ENV
         
-      - name: Check out target app repository
+      - name: sanity check for repo variables
         if: env.apprepo == '' || env.apptag == ''
         run: |
             echo "apprepo and apptag must be set"
@@ -119,7 +119,7 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/${{ github.repository }}/pulls
-          title: 'Registration Request ${{ env.app_shortname }}/${{ env.app_version }}'
+          title: 'App Submitted - ${{ env.app_shortname }}/${{ env.app_version }}'
           head: 'register/${{ env.appbranch }}'
           base: main
           body: |
