@@ -25,11 +25,12 @@ if 'analyzer_license' in appmetadata and appmetadata['analyzer_license']:
 if 'more' in appmetadata and appmetadata['more']:
     markdown.write(f"* More Info: {appmetadata['more']}\n")
     
+    
 def io_to_markdown(io_spec):
     props = ', '.join(f'{k}={v}' for k, v in io_spec['properties']) \
         if 'properties' in io_spec and io_spec['properties'] \
         else ""
-    return f"##### {io_spec['@type']} {'(required)' if 'required' in io_spec and io_spec['required'] else ''}\n###### {props}\n"
+    return f"##### {io_spec['@type']} {'(required)' if 'required' in io_spec and io_spec['required'] else ''}\n" + f"###### {props}\n" if props else ""
 
 
 markdown.write('#### Inputs\n')
@@ -42,7 +43,7 @@ for input_ in appmetadata['input']:
         markdown.write(io_to_markdown(input_))
 
 markdown.write('#### Configurable Parameters\n')
-markdown.write('Multivalued parameters can have two or more values.\n')
+markdown.write('Multivalued parameters can have two or more values.\n\n')
 
 if 'parameters' in appmetadata and appmetadata['parameters']:
     markdown.write('|Name|Description|Type|Multivalued|Choices|\n')
