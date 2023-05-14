@@ -27,8 +27,10 @@ on:
         required: false
         description: 'public container ID to include in the published app page'
   issues: 
-    # types: [opened]
-    types: [opened, reopened]
+     types: [opened]
+
+env:
+  app_dir_repo: 'keighrim/ghactions-tester'
 
 jobs:
   generate:
@@ -38,11 +40,14 @@ jobs:
     defaults:
       run:
         working-directory: ./main
+        
     steps:
       - name: Check out publisher repository
         uses: actions/checkout@v3
         with:
+          repository: ${{ env.app_dir_repo }}
           path: main
+          token: ${{ secrets.MY_GH_TOKEN }}
           
       - name: setup python
         uses: actions/setup-python@v4
@@ -50,7 +55,7 @@ jobs:
       - name: set repo address and tag from submitted issue
         if: github.event_name == 'issues'
         run: |
-          if [[ ${{ github.event.issue.title }} == "APP_SUBMISSION" ]] ; then
+          if [[ ${{ github.event.issue.title }} == "CLAMS App Submission" ]] ; then
             echo "${{ github.event.issue.body }}" | python scripts/parse_issue.py
             echo "appissue=${{ github.event.issue.number }}" >> $GITHUB_ENV
           else
@@ -59,11 +64,11 @@ jobs:
           fi
       
       - name: set repo address and tag from dispatch input
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
+        if: github.event_name != 'issues'
         run: |
-            echo "apprepo=$(echo ${{ github.event.inputs.repo }} | sed 's|^https://github.com/||g'" >> $GITHUB_ENV
-            echo "apptag=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
-            echo "appcontainer=${{ github.event.inputs.container }}" >> $GITHUB_ENV
+            echo "apprepo=$(echo ${{ inputs.repo }} | sed 's|^https://github.com/||g')" >> $GITHUB_ENV
+            echo "apptag=${{ inputs.tag }}" >> $GITHUB_ENV
+            echo "appcontainer=${{ inputs.container }}" >> $GITHUB_ENV
             echo "appissue=0" >> $GITHUB_ENV
         
       - name: sanity check for repo variables
@@ -109,17 +114,17 @@ jobs:
       - name: append app metadata to BIG json for API access
         run: python scripts/index_page_data.py ${{ env.app_fullid }}
         
-      - name: commit docs and push to new branch
+      - name: commit docs with generated metadata files
         run: |
-          branch="${{ env.appissue }}-${{ env.app_shortname }}-${{ env.app_version }}"
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -b register/"$branch"
+          topic_branch="${{ env.appissue }}-${{ env.app_shortname }}-${{ env.app_version }}"
+          git config --local user.email "keigh.rim@gmail.com"
+          git config --local user.name "keighrim"
+          git checkout -b register/"$topic_branch"
           git add docs
-          git commit -m "adding metadata of $branch"
-          git push origin register/"$branch"
-          echo "appbranch=$branch" >> $GITHUB_ENV
-          
+          git commit -m "adding metadata of $topic_branch"
+          git push https://keighrim:${{ secrets.MY_GH_TOKEN }}@github.com/${{ env.app_dir_repo }}.git register/"$topic_branch"
+          echo "appbranch=$topic_branch" >> $GITHUB_ENV
+
       - name: start a new pr
         uses: octokit/request-action@v2.x
         with:
@@ -133,6 +138,6 @@ jobs:
             This PR registers the app ${{ env.app_shortname }}/${{ env.app_version }} from https://github.com/${{ env.apprepo }}. Carefully review the metadata
             before merging. If something is wrong with the metadata, please close the PR and let the app developer know.
         env:
-#          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          # GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
 

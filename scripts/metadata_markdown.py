@@ -4,7 +4,7 @@ import string
 import os
 
 base_template = """
-### ${name} (${app_version})
+### ${name} (${app_version}) [metadata.json](metadata.json)
 ###### ${description}
 
 * App ID: [${identifier}](${identifier})
