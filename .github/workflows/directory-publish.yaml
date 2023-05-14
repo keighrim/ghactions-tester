@@ -108,7 +108,7 @@ jobs:
           head: ${{ env.appbranch }}
           base: main
           body: |
-            ${{ env.appissue != 0 && format('addresses \#{0}.', env.appissue)}} 
+            ${{ env.appissue != 0 && format('addresses \#{0}.', env.appissue) || '(no connected issue)' }} 
             some prose for urge manual review before merge 
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
