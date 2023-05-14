@@ -6,7 +6,7 @@
   "analyzer_version": "3.1.2",
   "app_license": "Apache 2.0",
   "analyzer_license": "MIT",
-  "identifier": "http://apps.clams.ai/spacy-wrapper/v1",
+  "identifier": "https://apps.clams.ai/spacy-wrapper/v1",
   "url": "https://github.com/clamsproject/app-spacy-nlp",
   "input": [
     {
