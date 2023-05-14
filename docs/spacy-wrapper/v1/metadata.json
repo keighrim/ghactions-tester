@@ -10,40 +10,32 @@
   "url": "https://github.com/clamsproject/app-spacy-nlp",
   "input": [
     {
-      "at_type": "http://mmif.clams.ai/vocabulary/TextDocument/v1",
-      "properties": {},
+      "@type": "http://mmif.clams.ai/vocabulary/TextDocument/v1",
       "required": true
     },
     {
-      "at_type": "http://vocab.lappsgrid.org/Token",
-      "properties": {},
+      "@type": "http://vocab.lappsgrid.org/Token",
       "required": false
     }
   ],
   "output": [
     {
-      "at_type": "http://vocab.lappsgrid.org/Token",
-      "properties": {}
+      "@type": "http://vocab.lappsgrid.org/Token"
     },
     {
-      "at_type": "http://vocab.lappsgrid.org/Token#pos",
-      "properties": {}
+      "@type": "http://vocab.lappsgrid.org/Token#pos"
     },
     {
-      "at_type": "http://vocab.lappsgrid.org/Token#lemma",
-      "properties": {}
+      "@type": "http://vocab.lappsgrid.org/Token#lemma"
     },
     {
-      "at_type": "http://vocab.lappsgrid.org/NounChunk",
-      "properties": {}
+      "@type": "http://vocab.lappsgrid.org/NounChunk"
     },
     {
-      "at_type": "http://vocab.lappsgrid.org/Sentence",
-      "properties": {}
+      "@type": "http://vocab.lappsgrid.org/Sentence"
     },
     {
-      "at_type": "http://vocab.lappsgrid.org/NamedEntity",
-      "properties": {}
+      "@type": "http://vocab.lappsgrid.org/NamedEntity"
     }
   ],
   "parameters": [
@@ -51,11 +43,8 @@
       "name": "pretokenized",
       "description": "Boolean parameter to set the app to use existing tokenization, if available, for text documents for NLP processing. Useful to process ASR documents, for example.",
       "type": "boolean",
-      "choices": null,
       "default": 0,
       "multivalued": false
     }
-  ],
-  "dependencies": null,
-  "more": null
+  ]
 }
