@@ -7,17 +7,21 @@ base_template = """
 ### ${name} (${app_version})
 ###### ${description}
 
-* App ID: ${identifier}
+* App ID: [${identifier}](${identifier})
 * App License: ${app_license}
-* Source Repository: ${url}
+* Source Repository: [${url}](${url})
 """
+
+
+def markdown_link(url):
+    return f"[{url}]({url})"
 
 appmetadata = json.load(open('metadata.json'))
 markdown = io.StringIO()
 markdown.write(string.Template(base_template).substitute(appmetadata))
 
 if os.getenv('appcontainer', False):
-    markdown.write(f"* Prebuilt Container Image: {os.getenv('appcontainer')}\n")
+    markdown.write(f"* Prebuilt Container Image: {markdown_link(os.getenv('appcontainer'))}\n")
 if 'analyzer_version' in appmetadata and appmetadata['analyzer_version']:
     markdown.write(f"* Analyzer Version: {appmetadata['analyzer_version']}\n")
 if 'analyzer_license' in appmetadata and appmetadata['analyzer_license']:
@@ -30,7 +34,7 @@ def io_to_markdown(io_spec):
     props = ', '.join(f'{k}={v}' for k, v in io_spec['properties']) \
         if 'properties' in io_spec and io_spec['properties'] \
         else ""
-    return f"* {io_spec['@type']} {'(required)' if 'required' in io_spec and io_spec['required'] else ''}\n###### {props if props else 'ANY'}\n"
+    return f"* {markdown_link(io_spec['@type'])} {'(required)' if 'required' in io_spec and io_spec['required'] else ''}\n###### {props if props else 'ANY'}\n"
 
 
 markdown.write('\n\n#### Inputs\n')
@@ -43,7 +47,7 @@ for input_ in appmetadata['input']:
         markdown.write(io_to_markdown(input_))
 
 markdown.write('\n\n#### Configurable Parameters\n')
-markdown.write('Multivalued parameters can have two or more values.\n\n')
+markdown.write('###### Multivalued parameters can have two or more values.\n\n')
 
 if 'parameters' in appmetadata and appmetadata['parameters']:
     markdown.write('|Name|Description|Type|Multivalued|Choices|\n')
@@ -73,7 +77,7 @@ else:
     markdown.write('##### N/A\n')
     
 markdown.write('\n\n#### Outputs\n')
-markdown.write('Note that not all output annotations are always generated.\n')
+markdown.write('###### Note that not all output annotations are always generated.\n')
 for output in appmetadata['output']:
     markdown.write(io_to_markdown(output))
 
