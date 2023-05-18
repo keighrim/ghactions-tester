@@ -30,7 +30,7 @@ on:
      types: [opened]
 
 env:
-  APP_DIR_REPO: 'clamsproject/apps'
+  APP_DIR_REPO: 'keighrim/ghactions-tester'
 
 jobs:
   generate:
