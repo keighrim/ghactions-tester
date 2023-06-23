@@ -1,0 +1,23 @@
+# main links
+main:
+  - title: "HOME"
+    url: /
+  - title: "Documentation"
+    url: /documentation/manuals/
+  # - title: "Sample Posts"
+  #   url: /year-archive/
+  # - title: "Sample Collections"
+  #   url: /collection-archive/
+  # - title: "Sitemap"
+  #   url: /sitemap/
+
+documentation:
+  - title: "Documentation (Manuals)"
+    url: /documentation/manuals/
+    children:
+      - title: "clamsapp"
+        url: /documentation/clamsapp/
+      - title: "registration"
+        url: /documentation/registration/
+
+

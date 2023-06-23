@@ -1,3 +1,13 @@
+---
+layout: single
+title:  "How to use CLAMS App"
+collection: documentation
+permalink: /documentation/clamsapp/
+sidebar:
+    nav: "documentation"
+toc: true
+---
+
 ## Using CLAMS App
 
 This document provides general instructions for installing and using CLAMS Apps. 

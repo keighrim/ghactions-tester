@@ -1,5 +1,10 @@
+---
+layout: home
+title: "CLAMS App directory"
+permalink: /
+---
 
-## How to use CLAMS apps 
+## How to use CLAMS apps
 
 * [CLAMS App user manual](clamsapp)
 
@@ -19,4 +24,3 @@
         {% endfor %}
     {% endif %}
 {% endfor %}
-
