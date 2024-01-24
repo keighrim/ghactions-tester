@@ -105,7 +105,7 @@ jobs:
         with:
           repository: ${{ env.APP_DIR_REPO }}
           path: main
-          token: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          token: ${{ secrets.MY_GH_TOKEN }}
           
       - name: "🐍 Setup Python"
         uses: actions/setup-python@v4
@@ -190,4 +190,4 @@ jobs:
             
             (submitted by @${{ github.actor }})
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_CLAMSBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GH_TOKEN }}
