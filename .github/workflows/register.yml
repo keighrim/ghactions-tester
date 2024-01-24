@@ -134,8 +134,7 @@ jobs:
             \"submitter\": \"${{ github.actor }}\" \
             }" \ | jq > ../main/submission.json
           if [[ $(git cat-file -t ${{ needs.trigger.outputs.apptag }}) == tag ]]; then \
-            cat ../main/metadata.json | jq ". += {\"releasenotes\": \"$(git for-each-ref refs/tags/${{ needs.trigger.outputs.apptag }} --format='%(contents)')\"}" > ../main/submission.json \ 
-          fi
+            cat ../main/submission.json | jq ". += {\"releasenotes\": $(git for-each-ref refs/tags/${{ needs.trigger.outputs.apptag }} --format='%(contents)' | jq -Rsa )}" > ../main/submission.json; fi
           
           
       - name: "🏷 Prep more variables"
