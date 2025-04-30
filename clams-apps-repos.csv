@@ -35,7 +35,7 @@ https://github.com/clamsproject/app-instructblip-captioner,AppStatus.OUTDATED,1.
 https://github.com/clamsproject/app-bart-summarizer,AppStatus.OUTDATED,1.2.5,main,2024-07-11 16:52:04+00:00,2024-07-11 16:31:15+00:00
 https://github.com/clamsproject/app-llava-context-captioner,AppStatus.OUTDATED,1.2.2,main,2024-07-08 14:43:55+00:00,2024-07-06 03:43:24+00:00
 https://github.com/clamsproject/app-role-filler-binder,AppStatus.OUTDATED,1.2.5,main,2024-07-05 20:53:05+00:00,2024-06-04 14:39:02+00:00
-https://github.com/clamsproject/app-text-slicer,AppStatus.OUTDATED,1.2.5,main,2024-07-01 16:22:38+00:00,2024-06-14 02:51:08+00:00
+https://github.com/clamsproject/app-text-slicer,AppStatus.OUTDATED,1.2.5,master,2024-07-01 16:22:38+00:00,2024-06-14 02:51:08+00:00
 https://github.com/clamsproject/app-paddleocr-wrapper,AppStatus.OUTDATED,1.2.2,main,2024-06-28 21:20:06+00:00,2024-06-12 15:21:42+00:00
 https://github.com/clamsproject/app-east-textdetection,AppStatus.OUTDATED,1.2.5,main,2024-06-28 17:13:54+00:00,2019-05-30 19:12:16+00:00
 https://github.com/clamsproject/app-boundingbox-concatenation,AppStatus.OUTDATED,1.2.3,main,2024-06-13 13:08:40+00:00,2023-09-26 19:02:03+00:00
@@ -44,7 +44,7 @@ https://github.com/clamsproject/app-doctr-wrapper,AppStatus.OUTDATED,1.2.1,main,
 https://github.com/clamsproject/app-pyscenedetect-wrapper,AppStatus.OUTDATED,1.1.3,main,2024-03-11 17:36:14+00:00,2019-08-21 01:24:46+00:00
 https://github.com/clamsproject/app-dlib-facedetection-wrapper,AppStatus.OUTDATED,UNKNOWN,master,2023-06-08 12:04:00+00:00,2019-05-30 19:12:00+00:00
 https://github.com/clamsproject/app-insightface,AppStatus.OUTDATED,0.5.1,main,2023-01-17 05:47:05+00:00,2023-01-17 00:03:16+00:00
-https://github.com/clamsproject/app-fastpunct,AppStatus.OUTDATED,0.5.0,main,2022-06-18 16:14:56+00:00,2021-09-17 16:07:36+00:00
+https://github.com/clamsproject/app-fastpunct,AppStatus.OUTDATED,0.5.0,master,2022-06-18 16:14:56+00:00,2021-09-17 16:07:36+00:00
 https://github.com/clamsproject/app-pyRLSA,AppStatus.OUTDATED,UNKNOWN,master,2019-10-22 16:48:48+00:00,2019-10-22 16:50:03+00:00
 https://github.com/clamsproject/app-demux,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2019-05-30 18:55:19+00:00
 https://github.com/clamsproject/app-montreal-fa-wrapper,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2019-05-30 19:12:25+00:00
