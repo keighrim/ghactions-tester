@@ -1,11 +1,11 @@
 repo,status,SDK-ver,main_branch,last_commit,start_date
 https://github.com/clamsproject/app-dbpedia-spotlight-wrapper,AppStatus.REGISTERED,1.0.9,main,2023-08-23 15:00:41+00:00,2023-05-31 21:27:29+00:00
-https://github.com/clamsproject/app-fewshotclassifier,AppStatus.REGISTERED,UNKNOWN,master,2023-08-01 22:35:56+00:00,2023-06-07 16:00:38+00:00
+https://github.com/clamsproject/app-fewshotclassifier,AppStatus.REGISTERED,1.0.9,main,2023-08-01 22:35:56+00:00,2023-06-07 16:00:38+00:00
 https://github.com/clamsproject/app-barsdetection,AppStatus.REGISTERED,1.0.9,main,2023-07-31 23:28:11+00:00,2019-05-30 18:51:00+00:00
 https://github.com/clamsproject/app-parseqocr-wrapper,AppStatus.REGISTERED,1.0.9,main,2023-07-25 23:56:57+00:00,2023-03-08 19:06:52+00:00
-https://github.com/clamsproject/app-chyron-detection,AppStatus.REGISTERED,1.0.9,master,2023-07-24 21:43:09+00:00,2023-06-13 06:42:08+00:00
+https://github.com/clamsproject/app-chyron-detection,AppStatus.REGISTERED,1.0.9,main,2023-07-24 21:43:09+00:00,2023-06-13 06:42:08+00:00
 https://github.com/clamsproject/app-gentle-forced-aligner-wrapper,AppStatus.REGISTERED,1.0.9,main,2023-07-24 19:13:14+00:00,2019-11-07 15:41:53+00:00
-https://github.com/clamsproject/app-tonedetection,AppStatus.REGISTERED,1.0.9,master,2023-07-24 07:24:07+00:00,2023-03-25 23:18:49+00:00
+https://github.com/clamsproject/app-tonedetection,AppStatus.REGISTERED,1.0.9,main,2023-07-24 07:24:07+00:00,2023-03-25 23:18:49+00:00
 https://github.com/clamsproject/app-brandeis-acs-wrapper,AppStatus.REGISTERED,1.0.9,main,2023-07-24 05:38:45+00:00,2020-10-29 03:53:17+00:00
 https://github.com/clamsproject/app-aapb-pua-kaldi-wrapper,AppStatus.REGISTERED,1.0.9,main,2023-07-24 05:24:23+00:00,2020-10-02 13:45:49+00:00
 https://github.com/clamsproject/app-slatedetection,AppStatus.REGISTERED,1.0.9,main,2023-07-24 04:45:55+00:00,2019-05-30 19:12:45+00:00
@@ -51,7 +51,7 @@ https://github.com/clamsproject/app-montreal-fa-wrapper,AppStatus.DISCONTINUED,U
 https://github.com/clamsproject/app-nltk-sentencesplitter-wrapper,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2019-05-30 19:12:35+00:00
 https://github.com/clamsproject/app-tesseractocr-slatetext-wrapper,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2019-05-30 19:12:55+00:00
 https://github.com/clamsproject/app-nlp-example,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2020-10-13 17:45:24+00:00
-https://github.com/clamsproject/app-mmif-prettifier,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2020-12-02 18:30:40+00:00
 https://github.com/clamsproject/app-role-filler-binder-old,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2023-08-03 16:45:38+00:00
 https://github.com/clamsproject/app-wav2vec-forced-aligner,AppStatus.DISCONTINUED,UNKNOWN,master,2023-08-18 14:09:09+00:00,2023-08-10 19:50:08+00:00
 https://github.com/clamsproject/app-slate-textdetection,AppStatus.DISCONTINUED,0.5.1,N/A,N/A,2021-05-11 15:14:26+00:00
+https://github.com/clamsproject/app-mmif-prettifier,AppStatus.DISCONTINUED,0.1.3,N/A,N/A,2020-12-02 18:30:40+00:00
