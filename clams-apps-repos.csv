@@ -43,7 +43,7 @@ https://github.com/clamsproject/app-inaspeechsegmenter-wrapper,AppStatus.OUTDATE
 https://github.com/clamsproject/app-doctr-wrapper,AppStatus.OUTDATED,1.2.1,main,2024-04-23 15:49:27+00:00,2024-02-01 21:59:43+00:00
 https://github.com/clamsproject/app-pyscenedetect-wrapper,AppStatus.OUTDATED,1.1.3,main,2024-03-11 17:36:14+00:00,2019-08-21 01:24:46+00:00
 https://github.com/clamsproject/app-dlib-facedetection-wrapper,AppStatus.OUTDATED,UNKNOWN,master,2023-06-08 12:04:00+00:00,2019-05-30 19:12:00+00:00
-https://github.com/clamsproject/app-insightface,AppStatus.OUTDATED,0.5.1,master,2023-01-17 05:47:05+00:00,2023-01-17 00:03:16+00:00
+https://github.com/clamsproject/app-insightface,AppStatus.OUTDATED,0.5.1,main,2023-01-17 05:47:05+00:00,2023-01-17 00:03:16+00:00
 https://github.com/clamsproject/app-fastpunct,AppStatus.OUTDATED,0.5.0,main,2022-06-18 16:14:56+00:00,2021-09-17 16:07:36+00:00
 https://github.com/clamsproject/app-pyRLSA,AppStatus.OUTDATED,UNKNOWN,master,2019-10-22 16:48:48+00:00,2019-10-22 16:50:03+00:00
 https://github.com/clamsproject/app-demux,AppStatus.DISCONTINUED,UNKNOWN,N/A,N/A,2019-05-30 18:55:19+00:00
